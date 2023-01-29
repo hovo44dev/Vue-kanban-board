@@ -1,0 +1,10 @@
+@import "./normalize.css";
+
+* {
+  font-family: "Roboto", sans-serif;
+}
+
+button {
+  border: none;
+  background: inherit;
+}
