@@ -12,6 +12,7 @@
   "dependencies": {
     "autoprefixer": "^10.4.13",
     "click-outside-vue3": "^4.0.1",
+    "lodash": "^4.17.21",
     "pinia": "^2.0.28",
     "pinia-plugin-persistedstate": "^3.0.2",
     "postcss": "^8.4.21",

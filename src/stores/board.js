@@ -1,6 +1,7 @@
 import { ref } from "vue";
 import { useAuth } from "./auth";
 import { defineStore } from "pinia";
+import _ from "lodash";
 import columnsDefData from "../assets/data/columnsDefData";
 
 export const useBoardStore = defineStore(
@@ -9,6 +10,11 @@ export const useBoardStore = defineStore(
     const authStore = useAuth();
 
     const columns = ref(columnsDefData);
+
+    const resetColumns = () => {
+      localStorage.clear();
+      columns.value = _.cloneDeep(columnsDefData);
+    };
 
     const addColumn = (columnTitle) => {
       columns.value.push({
@@ -57,6 +63,7 @@ export const useBoardStore = defineStore(
       deleteColumn,
       deleteCard,
       editCardTitle,
+      resetColumns,
     };
   },
   {

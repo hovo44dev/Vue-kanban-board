@@ -1,7 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { useBoardStore } from "./board";
-import columnsDefData from "../assets/data/columnsDefData";
 
 export const useAuth = defineStore(
   "auth",
@@ -22,7 +21,7 @@ export const useAuth = defineStore(
     };
 
     const logout = () => {
-      boardStore.columns = columnsDefData;
+      boardStore.resetColumns();
       userName.value = null;
     };
 
