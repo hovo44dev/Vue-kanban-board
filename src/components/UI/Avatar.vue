@@ -8,7 +8,7 @@ const props = defineProps({
 });
 
 const shortTitle = computed(() => {
-  return props.title.slice(0, 2);
+  return props?.title?.slice(0, 2);
 });
 </script>
 
@@ -28,7 +28,7 @@ const shortTitle = computed(() => {
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
 }
 </style>

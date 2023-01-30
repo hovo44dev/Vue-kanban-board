@@ -1,9 +1,12 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
+import { useAuth } from "./auth";
 import { defineStore } from "pinia";
 
 export const useBoardStore = defineStore(
   "board",
   () => {
+    const authStore = useAuth();
+
     const columns = ref([
       {
         id: 1,
@@ -44,10 +47,37 @@ export const useBoardStore = defineStore(
       currentColumn.cards.push({
         id: new Date().getUTCMilliseconds(),
         title,
+        createdAt: new Date(),
+        owner: authStore.userName,
       });
     };
 
-    return { columns, addColumn, addCard, deleteColumn };
+    const editCardTitle = (title, { columnId, cardId }) => {
+      const currentColumnIndex = columns.value.findIndex(
+        (column) => column.id === columnId
+      );
+      columns.value[currentColumnIndex].cards.find(
+        (card) => card.id === cardId
+      ).title = title;
+    };
+
+    const deleteCard = ({ columnId, cardId }) => {
+      const currentColumnIndex = columns.value.findIndex(
+        (column) => column.id === columnId
+      );
+      columns.value[currentColumnIndex].cards = columns.value[
+        currentColumnIndex
+      ].cards.filter((card) => card.id !== cardId);
+    };
+
+    return {
+      columns,
+      addColumn,
+      addCard,
+      deleteColumn,
+      deleteCard,
+      editCardTitle,
+    };
   },
   {
     persist: {

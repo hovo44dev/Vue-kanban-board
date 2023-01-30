@@ -1,12 +1,82 @@
 <script setup>
+import { computed } from "vue";
+import { useBoardStore } from "@/stores/board";
 import ModalWrapper from "./UI/ModalWrapper.vue";
 import Avatar from "./UI/Avatar.vue";
+
+// store
+const store = useBoardStore();
+
+// props
+const props = defineProps({
+  modalData: {
+    type: Object,
+    default: () => {},
+  },
+});
+
+// emits
+const emit = defineEmits(["close"]);
+
+// computed
+const currentColumnData = computed(() => {
+  const currentColumn = store.columns.find(
+    (column) => column.id === props.modalData.columnId
+  );
+  return currentColumn;
+});
+const getCardData = computed(() => {
+  const currentCard = currentColumnData.value.cards.find(
+    (card) => card.id === props.modalData.cardId
+  );
+
+  return currentCard;
+});
+const createdAtDate = computed(() => {
+  const dateNow = new Date();
+  const createdAt = new Date(getCardData.value.createdAt);
+
+  const diffTime = Math.abs(dateNow - createdAt);
+
+  const diffSeconds = Math.floor(diffTime / 1000);
+  const diffMinutes = Math.floor(diffTime / (1000 * 60));
+  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  const units = [
+    { name: "days", value: diffDays },
+    { name: "hours", value: diffHours % 24 },
+    { name: "minutes", value: diffMinutes % 60 },
+    { name: "seconds", value: diffSeconds % 60 },
+  ];
+
+  const result = [];
+  let counter = 0;
+
+  for (let i = 0; i < units.length && counter < 2; i++) {
+    if (units[i].value) {
+      result.push(units[i].value + " " + units[i].name);
+      counter++;
+    }
+  }
+
+  return result.join(", ");
+});
+
+// methods
+const closeModal = () => {
+  emit("close");
+};
+const deleteCard = () => {
+  store.deleteCard(props.modalData);
+  closeModal();
+};
 </script>
 
 <template>
   <ModalWrapper>
     <div class="card-popup">
-      <button class="card-popup_close">
+      <button @click="closeModal" class="card-popup_close">
         <img src="../assets/icons/cross.svg" alt="close" />
       </button>
       <div class="card-popup-header">
@@ -14,49 +84,59 @@ import Avatar from "./UI/Avatar.vue";
           <img src="../assets/icons/textbook.svg" alt="book" />
         </div>
         <div class="card-popup-header-body">
-          <textarea class="card-popup-header-body-title" value="adsf" />
+          <textarea
+            class="card-popup-header-body-title"
+            v-model.lazy="getCardData.title"
+          />
           <p class="card-popup-header-body-column-name">
-            in List <span>done</span>
+            in List <span>{{ currentColumnData.title }}</span>
           </p>
         </div>
       </div>
-      <div class="card-popup-inner">
-        <div class="card-popup-inner-description">
-          <div class="card-popup-inner-description-icon">
-            <img src="../assets/icons/align-left.svg" alt="align-left" />
+      <div class="card-popup_body">
+        <div class="card-popup_body-wrapper">
+          <div class="card-popup-inner">
+            <div class="card-popup-inner-description">
+              <div class="card-popup-inner-description-icon">
+                <img src="../assets/icons/align-left.svg" alt="description" />
+              </div>
+              <div class="card-popup-inner-description-body">
+                <p class="card-popup-inner-description-body-title">
+                  Description
+                </p>
+                <textarea
+                  v-model.lazy="getCardData.description"
+                  placeholder="Add a more detailed description..."
+                  class="card-popup-inner-description-body-area"
+                ></textarea>
+              </div>
+            </div>
           </div>
-          <div class="card-popup-inner-description-body">
-            <p class="card-popup-inner-description-body-title">Description</p>
-            <textarea
-              placeholder="Add a more detailed description..."
-              class="card-popup-inner-description-body-area"
-            ></textarea>
+          <div class="card-popup-activity">
+            <div class="card-popup-activity-header">
+              <div class="card-popup-activity-header-icon">
+                <img src="../assets/icons/activity.svg" alt="align-left" />
+              </div>
+              <p class="card-popup-activity-header-title">Activity</p>
+            </div>
+            <div class="card-popup-activity-body">
+              <Avatar title="Narek" />
+              <h3 class="card-popup-activity-body-description">
+                {{ getCardData.owner }} <span>an {{ createdAtDate }} ago</span>
+              </h3>
+            </div>
           </div>
         </div>
         <div class="card-popup-inner-actions">
           <h4 class="card-popup-inner-actions-title">Actions</h4>
           <div class="card-popup-inner-actions-items">
-            <div class="item">
+            <div @click="deleteCard" class="item">
               <div class="icon">
                 <img src="../assets/icons/trash.svg" alt="delete" />
               </div>
               <p>Delete</p>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="card-popup-activity">
-        <div class="card-popup-activity-header">
-          <div class="card-popup-activity-header-icon">
-            <img src="../assets/icons/activity.svg" alt="align-left" />
-          </div>
-          <p class="card-popup-activity-header-title">Activity</p>
-        </div>
-        <div class="card-popup-activity-body">
-          <Avatar title="Narek" />
-          <h3 class="card-popup-activity-body-description">
-            Narek <span>an hour ago</span>
-          </h3>
         </div>
       </div>
     </div>
@@ -134,11 +214,20 @@ import Avatar from "./UI/Avatar.vue";
       }
     }
   }
-  &-inner {
+  &_body {
     display: flex;
+    justify-content: space-between;
+    @media (max-width: 575px) {
+      flex-direction: column;
+    }
+    &-wrapper {
+      flex: 1;
+    }
+  }
+  &-inner {
     margin-top: 30px;
     width: 100%;
-    justify-content: space-between;
+    flex: 1;
     &-description {
       display: flex;
       flex: 1;
@@ -175,6 +264,9 @@ import Avatar from "./UI/Avatar.vue";
     &-actions {
       padding: 0 0 8px 8px;
       width: 200px;
+      @media (max-width: 575px) {
+        margin-top: 30px;
+      }
       &-items {
         margin-top: 10px;
       }

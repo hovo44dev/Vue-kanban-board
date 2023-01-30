@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useBoardStore } from "@/stores/board";
+import BoardCardModal from "./BoardCardModal.vue";
 import draggable from "vuedraggable";
 import BoardCard from "@/components/BoardCard.vue";
 import AddList from "./UI/AddList.vue";
@@ -21,6 +22,11 @@ const textarea = ref(null);
 // reactive data
 const textareaIsActive = ref(false);
 const dropdown = ref(false);
+const modalData = ref({
+  columnId: props.columnData.id,
+  cardId: null,
+});
+const cardModal = ref(false);
 
 // methods
 const toggleAreaActive = () => {
@@ -34,6 +40,25 @@ const addCard = (title) => {
 };
 const toggleDropdown = (bool) => {
   dropdown.value = bool;
+};
+const toggleCardModal = () => {
+  cardModal.value = !cardModal.value;
+};
+const addModalData = (cardId) => {
+  modalData.value.cardId = cardId;
+  toggleCardModal();
+};
+const editCardTitle = (title, cardId) => {
+  store.editCardTitle(title, {
+    columnId: props.columnData.id,
+    cardId,
+  });
+};
+const deleteCard = (cardId) => {
+  store.deleteCard({
+    columnId: props.columnData.id,
+    cardId,
+  });
 };
 
 const log = (evt) => {
@@ -70,12 +95,18 @@ const log = (evt) => {
         chosenClass="chosenClass"
         dragClass="dragClass"
         group="card"
+        handle=".card_drag-handle"
         :force-fallback="true"
         @change="log"
         itemKey="name"
       >
         <template #item="{ element }">
-          <BoardCard :cardData="element" />
+          <BoardCard
+            @openModal="addModalData(element.id)"
+            @edit="(title) => editCardTitle(title, element.id)"
+            @delete="deleteCard(element.id)"
+            :cardData="element"
+          />
         </template>
       </draggable>
     </div>
@@ -87,6 +118,11 @@ const log = (evt) => {
       @close="toggleDropdown(false)"
       @delete="store.deleteColumn(props.columnData.id)"
     />
+    <BoardCardModal
+      v-if="cardModal"
+      @close="toggleCardModal"
+      :modalData="modalData"
+    />
   </div>
 </template>
 
@@ -95,11 +131,19 @@ const log = (evt) => {
   display: none;
 }
 .ghost {
-  font-size: 0 !important;
-  background-color: #091e4214;
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: lightgray;
+    z-index: 2;
+  }
 }
 .chosenClass {
-  
 }
 .dragClass {
   transform: rotate(5deg);

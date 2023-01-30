@@ -27,8 +27,10 @@ const toggleEdit = () => {
 };
 
 const addList = () => {
-  emit("add", nameData.value);
-  nameData.value = "";
+  if (nameData.value) {
+    emit("add", nameData.value);
+    nameData.value = "";
+  }
 };
 </script>
 
