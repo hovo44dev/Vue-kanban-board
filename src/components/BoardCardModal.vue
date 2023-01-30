@@ -75,7 +75,7 @@ const deleteCard = () => {
 
 <template>
   <ModalWrapper>
-    <div class="card-popup">
+    <div v-click-outside="closeModal" class="card-popup">
       <button @click="closeModal" class="card-popup_close">
         <img src="../assets/icons/cross.svg" alt="close" />
       </button>
@@ -120,7 +120,7 @@ const deleteCard = () => {
               <p class="card-popup-activity-header-title">Activity</p>
             </div>
             <div class="card-popup-activity-body">
-              <Avatar title="Narek" />
+              <Avatar :title="getCardData.owner" />
               <h3 class="card-popup-activity-body-description">
                 {{ getCardData.owner }} <span>an {{ createdAtDate }} ago</span>
               </h3>
@@ -144,11 +144,12 @@ const deleteCard = () => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
 .card-popup {
   width: 768px;
   max-width: 100%;
   margin: 48px auto 80px;
-  border-radius: 3px;
+  border-radius: $default-border-radius;
   background-color: #f4f5f7;
   position: relative;
   padding: 16px;
@@ -168,7 +169,7 @@ const deleteCard = () => {
     align-items: center;
     cursor: pointer;
     &:hover {
-      background-color: #091e4214;
+      background-color: $default-hover-color;
     }
     img {
       width: 16px;
@@ -193,15 +194,17 @@ const deleteCard = () => {
         overflow-wrap: break-word;
         border: none;
         resize: none;
+        overflow: hidden;
         background-color: unset;
         min-height: 24px;
+        height: auto;
         padding: 4px 8px;
         font-weight: 600;
         font-size: 1.25rem;
-        border-radius: 3px;
+        border-radius: $default-border-radius;
         &:focus {
           outline: none;
-          box-shadow: inset 0 0 0 2px#0079bf;
+          box-shadow: inset 0 0 0 2px $focus-border;
         }
       }
       &-column-name {
@@ -251,13 +254,19 @@ const deleteCard = () => {
         &-area {
           width: 100%;
           resize: none;
-          height: 56px;
+          min-height: 56px;
+          height: auto;
           background-color: #091e420a;
-          border-radius: 3px;
+          border-radius: $default-border-radius;
           padding: 8px 12px;
           outline: none;
           border: none;
           margin-top: 20px;
+          overflow: hidden;
+          &:focus {
+            outline: none;
+            box-shadow: inset 0 0 0 2px $focus-border;
+          }
         }
       }
     }
@@ -275,13 +284,13 @@ const deleteCard = () => {
         height: 32px;
         display: flex;
         align-items: center;
-        border-radius: 3px;
+        border-radius: $default-border-radius;
         padding: 6px 12px;
         background-color: #091e420a;
         transition: background-color 0.3s;
         cursor: pointer;
         &:hover {
-          background-color: #091e4214;
+          background-color: $default-hover-color;
         }
         .icon {
           width: 24px;

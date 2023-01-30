@@ -17,6 +17,7 @@ const props = defineProps({
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
 .addItem {
   width: 100%;
   height: 100%;
@@ -24,9 +25,9 @@ const props = defineProps({
   align-items: center;
   padding: 10px 8px;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: $default-border-radius;
   &:hover {
-    background-color: #091e4214;
+    background-color: $default-hover-color;
   }
   &_icon {
     margin-right: 10px;

@@ -87,10 +87,11 @@ const deleteCard = () => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
 .card {
   background-color: #fff;
-  border-radius: 3px;
-  box-shadow: 0 1px 0 #091e4240;
+  border-radius: $default-border-radius;
+  box-shadow: 0 1px 0 $box-shadow-color;
   margin: 0 10px;
   padding: 6px 8px;
   margin-bottom: 8px;
@@ -99,7 +100,7 @@ const deleteCard = () => {
   cursor: pointer;
   transition: opacity 0.3s;
   &:hover {
-    background-color: #091e4214;
+    background-color: $default-hover-color;
   }
   &:hover &_edit-icon {
     opacity: 1;
@@ -111,6 +112,9 @@ const deleteCard = () => {
   .wrapper {
     width: 100%;
   }
+  &_text {
+    margin-top: 5px;
+  }
   &_description-icon {
     margin-top: 5px;
     img {
@@ -120,13 +124,13 @@ const deleteCard = () => {
   &_edit-icon {
     width: 32px;
     height: 32px;
-    border-radius: 3px;
+    border-radius: $default-border-radius;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     &:hover {
-      background-color: #091e4214;
+      background-color: $default-hover-color;
     }
     cursor: pointer;
     img {
@@ -151,7 +155,7 @@ const deleteCard = () => {
     top: 0;
     padding: 6px 8px 2px;
     background-color: #fff;
-    border-radius: 3px;
+    border-radius: $default-border-radius;
     z-index: 10;
     &-textarea {
       width: 100%;
@@ -176,9 +180,14 @@ const deleteCard = () => {
       position: absolute;
       right: -100px;
       top: 0;
+      @media (max-width: 420px) {
+        bottom: -40px;
+        top: unset;
+        right: 0;
+      }
       &-item {
         background-color: #0009;
-        border-radius: 3px;
+        border-radius: $default-border-radius;
         color: #c7d1db;
         padding: 6px 12px;
         transition: transform 85ms ease-in;

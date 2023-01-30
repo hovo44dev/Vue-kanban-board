@@ -33,6 +33,7 @@ const signIn = () => {
           class="signIn_form-name"
           type="text"
           placeholder="Your Name"
+          @keyup.enter="signIn"
         />
         <span v-if="authError.error" class="error">{{
           authError.message
@@ -46,9 +47,10 @@ const signIn = () => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
 .signIn {
   background-color: #fff;
-  border-radius: 3px;
+  border-radius: $default-border-radius;
   padding: 25px 40px;
   box-shadow: rgb(0 0 0 / 10%) 0 0 10px;
   max-width: 400px;
@@ -62,7 +64,7 @@ const signIn = () => {
     flex-direction: column;
     &-name {
       border: 2px solid #dfe1e6;
-      border-radius: 3px;
+      border-radius: $default-border-radius;
       height: 40px;
       padding: 0 4px;
       &:focus {

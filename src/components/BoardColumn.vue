@@ -17,8 +17,15 @@ const props = defineProps({
   },
 });
 
+// emits
+const emit = defineEmits(["update:modelValue"]);
+
 // refs
 const textarea = ref(null);
+
+// eslint-disable-next-line vue/no-setup-props-destructure
+const defaultTitle = props.columnData.title;
+
 // reactive data
 const textareaIsActive = ref(false);
 const dropdown = ref(false);
@@ -30,8 +37,16 @@ const cardModal = ref(false);
 
 // methods
 const toggleAreaActive = () => {
-  textareaIsActive.value === !textareaIsActive.value;
+  textareaIsActive.value = !textareaIsActive.value;
   textarea.value.focus();
+};
+const updateColumnTitle = (event) => {
+  emit("update:modelValue", event.target.value);
+};
+const preventEmptyTitle = () => {
+  if (props.columnData.title === "") {
+    emit("update:modelValue", defaultTitle);
+  }
 };
 const addCard = (title) => {
   const cardData = { id: props.columnData.id, title };
@@ -60,10 +75,6 @@ const deleteCard = (cardId) => {
     cardId,
   });
 };
-
-const log = (evt) => {
-  window.console.log(evt);
-};
 </script>
 
 <template>
@@ -71,16 +82,16 @@ const log = (evt) => {
     <div class="column_header handle">
       <div class="column_header-wrapper" @click="toggleAreaActive">
         <div class="drag-zone" :class="{ disable: textareaIsActive }"></div>
-        <h2 class="column_header-name">{{ props.columnData.title }}</h2>
         <textarea
           ref="textarea"
           aria-label="Doing"
           spellcheck="false"
           dir="auto"
           maxlength="512"
-          data-autosize="true"
+          :data-autosize="true"
           :value="props.columnData.title"
-          @input="$emit('update:modelValue', $event.target.value)"
+          @input="updateColumnTitle"
+          @focusout="preventEmptyTitle"
         ></textarea>
       </div>
       <div @click="toggleDropdown(true)" class="column_header-extras">
@@ -97,8 +108,6 @@ const log = (evt) => {
         group="card"
         handle=".card_drag-handle"
         :force-fallback="true"
-        @change="log"
-        itemKey="name"
       >
         <template #item="{ element }">
           <BoardCard
@@ -127,46 +136,22 @@ const log = (evt) => {
 </template>
 
 <style lang="scss" scoped>
-.disable {
-  display: none;
-}
-.ghost {
-  position: relative;
-  &::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-color: lightgray;
-    z-index: 2;
-  }
-}
-.chosenClass {
-}
-.dragClass {
-  transform: rotate(5deg);
-  opacity: 1 !important;
-  background-color: #fff;
-}
+@import "@/assets/styles/variables.scss";
 .column {
   width: 272px;
   height: 100%;
-  white-space: nowrap;
   background-color: #ebecf0;
-  border-radius: 3px;
+  border-radius: $default-border-radius;
   display: flex;
   flex-direction: column;
   position: relative;
-  margin: 0 15px;
+  margin: 0 6px;
   padding-bottom: 10px;
   &_header {
     position: relative;
     display: flex;
     min-height: 20px;
     padding: 10px 8px;
-    align-items: center;
     justify-content: space-between;
     cursor: pointer;
     &-wrapper {
@@ -183,15 +168,17 @@ const log = (evt) => {
     }
     &-name {
       display: none;
+      font-weight: 600;
+      padding: 4px 8px;
+      font-size: 1rem;
     }
     textarea {
       resize: none;
-      border-radius: 3px;
+      border-radius: $default-border-radius;
       box-shadow: none;
-      font-weight: 600px;
+      font-weight: 600;
       max-height: 256px;
       min-height: 20px;
-      height: 28px;
       overflow: hidden;
       overflow-wrap: break-word;
       padding: 4px 8px;
@@ -200,29 +187,27 @@ const log = (evt) => {
       background: transparent;
       &:focus {
         background-color: #fff;
-        box-shadow: inset 0 0 0 2px #0079bf;
+        box-shadow: inset 0 0 0 2px $focus-border;
         outline: none;
       }
     }
     &-extras {
       width: 32px;
       height: 32px;
-      border-radius: 3px;
+      border-radius: $default-border-radius;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-left: 5px;
       &:hover {
-        background: #091e4214;
+        background: $default-hover-color;
       }
       img {
         width: 20px;
         height: 20px;
       }
     }
-  }
-  &_body {
   }
   &_footer {
     width: 100%;

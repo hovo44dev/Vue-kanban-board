@@ -13,9 +13,6 @@ const dragging = ref(false);
 const addColumn = (title) => {
   store.addColumn(title);
 };
-const log = (evt) => {
-  window.console.log(evt);
-};
 </script>
 
 <template>
@@ -23,13 +20,14 @@ const log = (evt) => {
     <draggable
       class="board_columns"
       :list="store.columns"
-      :group="{ name: 'column', pull: false, put: false }"
-      drag-class="skew"
+      :group="column"
+      ghostClass="ghost"
+      chosenClass="chosenClass"
+      dragClass="dragClass"
       handle=".handle"
-      @change="log"
       @start="dragging = true"
       @end="dragging = false"
-      itemKey="name"
+      :force-fallback="true"
     >
       <template #item="{ element }">
         <BoardColumn :columnData="element" v-model="element.title" />
@@ -42,9 +40,10 @@ const log = (evt) => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
 .board {
   width: 100%;
-  background-color: hsla(0, 0%, 0%, 0.16);
+  background-color: $board-color;
   height: 100%;
   padding: 20px 16px;
   min-height: calc(100vh - 44px);
@@ -57,9 +56,8 @@ const log = (evt) => {
   &_add-button {
     min-width: 272px;
     height: 40px;
+    background-color: $add-list-bg;
+    border-radius: $default-border-radius;
   }
-}
-.skew {
-  transform: skew(30deg);
 }
 </style>

@@ -49,11 +49,12 @@ const addList = () => {
 
     <div @click.stop class="add-list_form" :class="{ 'p-0': addCard }">
       <textarea
+        v-if="addCard"
         ref="inputRef"
         class="add-list_form-card-name"
         placeholder="Enter a title for this card..."
         v-model="nameData"
-        v-if="addCard"
+        @keyup.enter="addList"
       ></textarea>
       <input
         v-else
@@ -62,6 +63,7 @@ const addList = () => {
         type="text"
         placeholder="Enter list title..."
         v-model="nameData"
+        @keyup.enter="addList"
       />
       <div class="add-list_form-footer">
         <CustomButton @click="addList">Add list</CustomButton>
@@ -74,18 +76,19 @@ const addList = () => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
 .add-list {
   width: 100%;
   height: 40px;
   display: flex;
   align-items: center;
-  border-radius: 3px;
+  border-radius: $default-border-radius;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   transition: height 0.3s ease;
   &:hover {
-    background-color: #091e4214;
+    background-color: $default-hover-color;
   }
   &_header {
     width: 100%;
@@ -103,7 +106,7 @@ const addList = () => {
   &_form {
     width: 100%;
     background-color: #ebecf0;
-    border-radius: 3px;
+    border-radius: $default-border-radius;
     height: auto;
     min-height: 32px;
     padding: 4px;
@@ -111,14 +114,14 @@ const addList = () => {
       border-color 85ms ease-in;
     &-name {
       background-color: #fff;
-      box-shadow: inset 0 0 0 2px #0079bf;
+      box-shadow: inset 0 0 0 2px $focus-border;
       display: block;
       margin: 0;
       transition: margin 85ms ease-in, background 85ms ease-in;
       width: 100%;
       border: none;
       padding: 8px 12px;
-      border-radius: 3px;
+      border-radius: $default-border-radius;
       &:focus {
         outline: none;
       }
@@ -133,8 +136,8 @@ const addList = () => {
       border: none;
       max-height: 162px;
       padding: 6px 8px 2px;
-      box-shadow: 0 1px 0 #091e4240;
-      border-radius: 3px;
+      box-shadow: 0 1px 0 $box-shadow-color;
+      border-radius: $default-border-radius;
       &:focus {
         outline: none;
       }

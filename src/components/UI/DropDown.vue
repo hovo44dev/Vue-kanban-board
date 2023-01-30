@@ -1,22 +1,33 @@
-<script setup></script>
+<script setup>
+// emits
+const emit = defineEmits(["close", "delete"]);
+
+// methods
+const closeDropdown = () => {
+  emit("close");
+};
+const deleteCard = () => {
+  emit("delete");
+  closeDropdown();
+};
+</script>
 
 <template>
-  <div class="dropdown">
-    <button @click="$emit('close')" class="dropdown_close">
+  <div v-click-outside="closeDropdown" class="dropdown">
+    <button @click="closeDropdown" class="dropdown_close">
       <img src="@/assets/icons/cross.svg" alt="close" />
     </button>
     <div class="dropdown_header">
       <h4 class="dropdown_header-title">List actions</h4>
     </div>
     <div class="dropdown_actions">
-      <div @click="$emit('delete')" class="dropdown_actions-item">
-        Delete Column
-      </div>
+      <div @click="deleteCard" class="dropdown_actions-item">Delete Column</div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/variables.scss";
 .dropdown {
   background-color: #fff;
   position: absolute;
@@ -24,9 +35,12 @@
   left: 80%;
   z-index: 70;
   width: 304px;
-  border-radius: 3px;
-  box-shadow: 0 8px 16px -4px #091e4240, 0 0 0 1px #091e4214;
+  border-radius: $default-border-radius;
+  box-shadow: 0 8px 16px -4px $box-shadow-color, 0 0 0 1px $default-hover-color;
   padding: 12px 0;
+  @media (max-width: 765px) {
+    left: 10px;
+  }
   &_close {
     position: absolute;
     top: 0;
@@ -40,7 +54,7 @@
     justify-content: center;
     z-index: 2;
     &:hover {
-      background-color: #091e4214;
+      background-color: $default-hover-color;
     }
     img {
       width: 16px;
@@ -54,7 +68,7 @@
     align-items: center;
     display: flex;
     justify-content: center;
-    border-bottom: 1px solid #091e4240;
+    border-bottom: 1px solid $box-shadow-color;
     margin: 0 12px;
   }
   &_actions {
