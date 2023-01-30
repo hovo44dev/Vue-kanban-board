@@ -1,34 +1,14 @@
 import { ref } from "vue";
 import { useAuth } from "./auth";
 import { defineStore } from "pinia";
+import columnsDefData from "../assets/data/columnsDefData";
 
 export const useBoardStore = defineStore(
   "board",
   () => {
     const authStore = useAuth();
 
-    const columns = ref([
-      {
-        id: 1,
-        title: "To Do",
-        cards: [
-          {
-            id: 1,
-            title: "yes",
-          },
-        ],
-      },
-      {
-        id: 2,
-        title: "Doing",
-        cards: [],
-      },
-      {
-        id: 3,
-        title: "Done",
-        cards: [],
-      },
-    ]);
+    const columns = ref(columnsDefData);
 
     const addColumn = (columnTitle) => {
       columns.value.push({

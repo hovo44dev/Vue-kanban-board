@@ -1,9 +1,13 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
+import { useBoardStore } from "./board";
+import columnsDefData from "../assets/data/columnsDefData";
 
 export const useAuth = defineStore(
   "auth",
   () => {
+    const boardStore = useBoardStore();
+
     // reactive data
     const userName = ref("");
 
@@ -18,6 +22,7 @@ export const useAuth = defineStore(
     };
 
     const logout = () => {
+      boardStore.columns = columnsDefData;
       userName.value = null;
     };
 
